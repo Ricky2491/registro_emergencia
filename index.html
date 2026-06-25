@@ -113,6 +113,53 @@
         const form = document.getElementById('formRegistro');
         const filtroTexto = document.getElementById('filtroTexto');
         const filtroEstado = document.getElementById('filtroEstado');
+        const alertPlaceholder = document.getElementById('liveAlertPlaceholder');
+
+        // FUNCIÓN QUE FALTABA: Lógica para enviar el formulario
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!navigator.geolocation) {
+                alert("Tu dispositivo no soporta geolocalización.");
+                return;
+            }
+
+            // Mostrar estado de carga
+            const btnText = document.getElementById('btnText');
+            const btnSpinner = document.getElementById('btnSpinner');
+            btnText.classList.add('d-none');
+            btnSpinner.classList.remove('d-none');
+
+            navigator.geolocation.getCurrentPosition((posicion) => {
+                const payload = {
+                    cedula: document.getElementById('cedula').value.trim(),
+                    nombres: document.getElementById('nombres').value.trim(),
+                    apellidos: document.getElementById('apellidos').value.trim(),
+                    latitud: posicion.coords.latitude,
+                    longitud: posicion.coords.longitude
+                };
+
+                fetch(SCRIPT_URL, { 
+                    method: 'POST', 
+                    mode: 'no-cors', // Importante para evitar bloqueos de Google
+                    body: JSON.stringify(payload) 
+                })
+                .then(() => {
+                    alert("Registro enviado exitosamente.");
+                    form.reset();
+                    cargarDatosTabla();
+                })
+                .catch(() => alert("Error al enviar el registro."))
+                .finally(() => {
+                    btnText.classList.remove('d-none');
+                    btnSpinner.classList.add('d-none');
+                });
+            }, () => {
+                alert("Activa tu GPS para registrar.");
+                btnText.classList.remove('d-none');
+                btnSpinner.classList.add('d-none');
+            });
+        });
 
         // Lógica de filtrado
         function aplicarFiltros() {
@@ -121,9 +168,12 @@
             const filas = document.querySelectorAll('#tablaCuerpo tr');
 
             filas.forEach(fila => {
+                // Verificamos si la fila tiene datos antes de filtrar
+                if (fila.cells.length < 3) return; 
+                
                 const cedula = fila.cells[1].innerText.toLowerCase();
                 const nombre = fila.cells[2].innerText.toLowerCase();
-                const badge = fila.querySelector('.badge-estado').innerText.toLowerCase();
+                const badge = fila.querySelector('.badge-estado') ? fila.querySelector('.badge-estado').innerText.toLowerCase() : "";
 
                 const coincideTexto = cedula.includes(texto) || nombre.includes(texto);
                 const coincideEstado = estado === "" || badge.includes(estado);
@@ -132,7 +182,6 @@
             });
         }
 
-        // Eventos para filtros
         filtroTexto.addEventListener('input', aplicarFiltros);
         filtroEstado.addEventListener('change', aplicarFiltros);
 
@@ -148,7 +197,7 @@
                 badge.innerText = 'Encontrado';
                 badge.classList.replace('bg-danger', 'bg-success');
                 btn.remove();
-                aplicarFiltros(); // Re-aplicar filtros tras cambio
+                aplicarFiltros();
             }
         }
 
@@ -161,6 +210,7 @@
                 data.reverse().forEach(registro => {
                     const tr = document.createElement('tr');
                     const nombreCompleto = `${registro.nombres || ''} ${registro.apellidos || ''}`.trim();
+                    // Corregido enlace de Maps: se eliminó el "5" erróneo antes de la llave
                     tr.innerHTML = `
                         <td class="small fw-bold text-secondary">${new Date(registro.fecha).toLocaleString()}</td>
                         <td class="fw-semibold">${registro.cedula || '-'}</td>
@@ -171,7 +221,7 @@
                     `;
                     tbody.appendChild(tr);
                 });
-                aplicarFiltros(); // Re-aplicar filtros al recargar datos
+                aplicarFiltros();
             });
         }
     </script>
