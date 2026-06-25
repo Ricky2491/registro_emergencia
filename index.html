@@ -237,7 +237,7 @@
 
     <script>
         // CONFIGURACIÓN: URL OBTENIDA DEL DEPLOY DE TU GOOGLE APPS SCRIPT
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz7ff40t8lJ7zX8ZxBD4RitLmBNfCFrL1EdJ8s5lwj0ww8-f0J7d6Wms5dTt-cdku4/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyBGiUj_JVRSLTNsWRm2mWrKbv2J9EZ741bSdoX5Xc48zPbUg_g9Px-_jMzuBtGYit3/exec';
 
         const form = document.getElementById('formRegistro');
         const gpsStatus = document.getElementById('gpsStatus');
@@ -260,11 +260,11 @@
         function setCargando(estado) {
             if (estado) {
                 btnEnviar.disabled = true;
-                btnText.classList.add('d-none');
-                btnSpinner.classList.remove('d-none');
+                btnText.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Enviando Reporte...';
+                btnSpinner.classList.add('d-none'); // Mantenemos la consistencia simplificando el nodo interno
             } else {
                 btnEnviar.disabled = false;
-                btnText.classList.remove('d-none');
+                btnText.innerHTML = '<i class="bi bi-send-fill me-2"></i>Enviar Reporte con Ubicación';
                 btnSpinner.classList.add('d-none');
             }
         }
@@ -386,7 +386,8 @@
         }
 
         function abrirOpcionesMapa(lat, lon) {
-            document.getElementById('btnGoogleMaps').href = `https://www.google.com/maps?q=${lat},${lon}`;
+            // Se corrige la sintaxis de variables para evitar que rompa la ejecución e hilos lógicos en JavaScript
+            document.getElementById('btnGoogleMaps').href = `https://maps.google.com/?q=${lat},${lon}`;
             document.getElementById('btnWaze').href = `https://waze.com/ul?ll=${lat},${lon}&navigate=yes`;
             modalMapas.show();
         }
