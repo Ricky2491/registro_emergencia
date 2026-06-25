@@ -249,14 +249,12 @@
 
         function mostrarAlerta(mensaje, tipo) {
             const wrapper = document.createElement('div');
-            wrapper.innerHTML = [
-                `<div class="alert alert-${tipo} alert-dismissible fade show shadow-sm fw-bold border-0" role="alert" style="border-radius:10px;">`,
-                `   <div>${mensaje}</div>`,
-                '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
-                '</div>'
-            ].join('');
+            wrapper.className = 'alert alert-' + tipo + ' alert-dismissible fade show shadow-sm fw-bold border-0';
+            wrapper.style.borderRadius = '10px';
+            wrapper.role = 'alert';
+            wrapper.innerHTML = '<div>' + mensaje + '</div><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
             alertPlaceholder.append(wrapper);
-            setTimeout(() => wrapper.remove(), 9000);
+            setTimeout(function() { wrapper.remove(); }, 9000);
         }
 
         function setCargando(estado) {
@@ -288,12 +286,12 @@
             };
 
             const boxGps = document.querySelector('.gps-box');
-            gpsStatus.innerHTML = `<span class="text-warning"><span class="spinner-border spinner-border-sm me-1"></span> Conectando con satélites GPS...</span>`;
+            gpsStatus.innerHTML = '<span class="text-warning"><span class="spinner-border spinner-border-sm me-1"></span> Conectando con satélites GPS...</span>';
             boxGps.style.borderColor = '#ffc107';
 
             navigator.geolocation.getCurrentPosition(
                 function(posicion) {
-                    gpsStatus.innerHTML = `<span class="text-success"><i class="bi bi-check-circle-fill"></i> Coordenadas fijadas con éxito.</span>`;
+                    gpsStatus.innerHTML = '<span class="text-success"><i class="bi bi-check-circle-fill"></i> Coordenadas fijadas con éxito.</span>';
                     boxGps.style.borderColor = '#198754';
                     
                     const payload = {
@@ -302,7 +300,7 @@
                         apellidos: document.getElementById('apellidos').value.trim(),
                         latitud: posicion.coords.latitude,
                         longitud: posicion.coords.longitude,
-                        precision: `${posicion.coords.accuracy.toFixed(1)} m`
+                        precision: posicion.coords.accuracy.toFixed(1) + ' m'
                     };
 
                     fetch(SCRIPT_URL, {
@@ -311,24 +309,23 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     })
-                    .then(() => {
+                    .then(function() {
                         mostrarAlerta("<i class='bi bi-cloud-check-fill me-2'></i>Reporte procesado. Datos de ubicación transmitidos al centro de mando.", "success");
                         form.reset();
-                        gpsStatus.innerHTML = `<i class="bi bi-geo-alt"></i> Listo para próximo reporte...`;
+                        gpsStatus.innerHTML = '<i class="bi bi-geo-alt"></i> Listo para próximo reporte...';
                         boxGps.style.borderColor = '#dee2e6';
                         cargarDatosTabla();
                     })
-                    .catch(err => {
+                    .catch(function(err) {
                         mostrarAlerta("Error crítico en la red de transmisión. Verifique datos móviles.", "danger");
                         console.error(err);
                     })
-                    .finally(() => setCargando(false));
+                    .finally(function() { setCargando(false); });
                 },
                 function(error) {
                     setCargando(false);
-                    gpsStatus.innerHTML = `<span class="text-danger"><i class="bi bi-x-circle-fill"></i> Señal GPS inactiva.</span>`;
+                    gpsStatus.innerHTML = '<span class="text-danger"><i class="bi bi-x-circle-fill"></i> Señal GPS inactiva.</span>';
                     boxGps.style.borderColor = '#dc3545';
-                    // Alerta corregida exactamente bajo los requerimientos obligatorios
                     mostrarAlerta('<i class="bi bi-phone-vibrate-fill me-2"></i><strong>antes de registrar enciende tu GPS o ubicación</strong>', 'danger');
                 },
                 opcionesGps
@@ -346,23 +343,23 @@
             const syncStatus = document.getElementById('syncStatus');
             
             fetch(SCRIPT_URL)
-            .then(res => res.json())
-            .then(data => {
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
                 const tbody = document.getElementById('tablaCuerpo');
                 tbody.innerHTML = '';
 
                 if (data.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-4">Sin reportes registrados.</td></tr>`;
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4">Sin reportes registrados.</td></tr>';
                     return;
                 }
 
-                data.reverse().forEach(registro => {
+                data.reverse().forEach(function(registro) {
                     const tr = document.createElement('tr');
                     const nombreCompleto = (registro.nombres || registro.apellidos) 
-                        ? `${registro.nombres} ${registro.apellidos}`.trim() 
-                        : `<span class="text-muted small"><em>No provisto</em></span>`;
+                        ? (registro.nombres + ' ' + registro.apellidos).trim() 
+                        : '<span class="text-muted small"><em>No provisto</em></span>';
                     
-                    const cedulaFormateada = registro.cedula ? registro.cedula : `<span class="text-muted">-</span>`;
+                    const cedulaFormateada = registro.cedula ? registro.cedula : '<span class="text-muted">-</span>';
 
                     tr.innerHTML = `
                         <td class="small fw-bold text-secondary">${formatearFecha(registro.fecha)}</td>
@@ -374,22 +371,21 @@
                             </button>
                             <div class="text-muted mt-1" style="font-size:0.65rem; font-weight:500;">Precisión: ±${registro.precision}</div>
                         </td>
-                    `;
+                    </tr>`;
                     tbody.appendChild(tr);
                 });
 
-                syncStatus.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> Sincronizado`;
+                syncStatus.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i> Sincronizado';
                 syncStatus.className = "badge bg-success p-2 px-3 spin-pulse";
             })
-            .catch(err => {
+            .catch(function(err) {
                 console.error(err);
-                syncStatus.innerHTML = `<i class="bi bi-exclamation-triangle-fill me-1"></i> Fallo de Red`;
+                syncStatus.innerHTML = '<i class="bi bi-exclamation-triangle-fill me-1"></i> Fallo de Red';
                 syncStatus.className = "badge bg-danger p-2 px-3";
             });
         }
 
         function abrirOpcionesMapa(lat, lon) {
-            // Sintaxis corregida para evitar enlaces rotos y excepciones de ejecución en el navegador
             document.getElementById('btnGoogleMaps').href = `https://www.google.com/maps?q=${lat},${lon}`;
             document.getElementById('btnWaze').href = `https://waze.com/ul?ll=${lat},${lon}&navigate=yes`;
             modalMapas.show();
