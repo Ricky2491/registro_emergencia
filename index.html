@@ -109,7 +109,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzFtreUqE7Ri-HPdiYRRyB4rhDeEXF4CMupywzJlIvQSPxEr2jJEOTaMtIusIV_tZG2/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwkfHhaNB4M7LOSNQKIj5D-6yAa4DcnJ9wfJn2YLrwcyC2-mO8Csu1MxLTs8NQTB6FP/exec';
         const form = document.getElementById('formRegistro');
         const filtroTexto = document.getElementById('filtroTexto');
         const filtroEstado = document.getElementById('filtroEstado');
@@ -201,7 +201,10 @@
         function cargarDatosTabla() {
             const tbody = document.getElementById('tablaCuerpo');
             fetch(SCRIPT_URL)
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error('Error al conectar con el servidor: ' + res.status);
+                return res.json();
+            })
             .then(data => {
                 tbody.innerHTML = '';
                 data.reverse().forEach(registro => {
@@ -220,6 +223,10 @@
                     tbody.appendChild(tr);
                 });
                 aplicarFiltros();
+            })
+            .catch(err => {
+                console.error("Error cargando tabla:", err);
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center text-danger">Error: No se pudieron cargar los datos. Revisa la consola (F12).</td></tr>`;
             });
         }
     </script>
