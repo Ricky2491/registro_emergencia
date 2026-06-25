@@ -325,7 +325,7 @@
                         body: JSON.stringify(payload)
                     })
                     .then(function() {
-                        mostrarAlerta("<i class='bi bi-cloud-check-fill me-2'></i>Reporte procesado. Datos de ubicación transmitidos al centro de mando.", "success");
+                        mostrarAlerta("<i class='bi bi-cloud-check-fill me-2'></i>los datos de registraron correctamente", "success");
                         form.reset();
                         gpsStatus.innerHTML = '<i class="bi bi-geo-alt"></i> Listo para próximo reporte...';
                         boxGps.style.borderColor = '#dee2e6';
@@ -333,7 +333,7 @@
                         setTimeout(cargarDatosTabla, 1200);
                     })
                     .catch(function(err) {
-                        mostrarAlerta("Error crítico en la red de transmisión. Verifique datos móviles.", "danger");
+                        mostrarAlerta("<i class='bi bi-exclamation-triangle-fill me-2'></i>error no e lograron procesar los datos intenatrlo nuevamente.", "danger");
                         console.error(err);
                     })
                     .finally(function() { setCargando(false); });
