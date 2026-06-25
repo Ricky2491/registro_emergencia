@@ -251,7 +251,13 @@
         let esPrimeraCarga = true;
 
         window.addEventListener('DOMContentLoaded', function() {
-            modalMapas = new bootstrap.Modal(document.getElementById('mapModal'));
+            // CORRECCIÓN SEGURA: Verificamos si Bootstrap ya se cargó globalmente de forma correcta
+            if (typeof bootstrap !== 'undefined') {
+                modalMapas = new bootstrap.Modal(document.getElementById('mapModal'));
+            } else {
+                console.warn("Bootstrap JS no se ha detectado globalmente en DOMContentLoaded, se inicializará bajo demanda.");
+            }
+            
             cargarDatosTabla();
             // Intervalo de monitoreo en segundo plano
             setInterval(cargarDatosTabla, 10000);
@@ -313,7 +319,6 @@
                         precision: posicion.coords.accuracy.toFixed(1) + ' m'
                     };
 
-                    // CAMBIO CLAVE: Quitamos 'no-cors' y usamos el envío estándar adaptado a Apps Script
                     fetch(SCRIPT_URL, {
                         method: 'POST',
                         headers: { 'Content-Type': 'text/plain' }, 
@@ -325,7 +330,6 @@
                         gpsStatus.innerHTML = '<i class="bi bi-geo-alt"></i> Listo para próximo reporte...';
                         boxGps.style.borderColor = '#dee2e6';
                         
-                        // Espera un segundo técnico prudencial para que la API de Google procese el archivo y refresca instantáneamente
                         setTimeout(cargarDatosTabla, 1200);
                     })
                     .catch(function(err) {
@@ -357,8 +361,6 @@
             
             const tbody = document.getElementById('tablaCuerpo');
             
-            // Si es la primera vez que carga la página, mostramos el spinner. 
-            // En las actualizaciones posteriores se mantienen visibles los datos viejos hasta recibir los nuevos.
             if (esPrimeraCarga) {
                 tbody.innerHTML = `<tr>
                     <td colspan="4" class="text-center text-muted py-5">
@@ -371,7 +373,7 @@
             fetch(SCRIPT_URL)
             .then(function(res) { return res.json(); })
             .then(function(data) {
-                tbody.innerHTML = ''; // Limpiamos la tabla solo al recibir la respuesta exitosa
+                tbody.innerHTML = ''; 
                 esPrimeraCarga = false; 
 
                 if (data.length === 0) {
@@ -395,7 +397,7 @@
                             <button class="btn btn-sm btn-dark w-100 py-2" style="max-width: 130px; border-radius:6px; font-size:0.8rem; font-weight:600;" onclick="abrirOpcionesMapa(${registro.latitud}, ${registro.longitud})">
                                 <i class="bi bi-geo-alt-fill text-danger me-1"></i> MAPA RUTA
                             </button>
-                            <div class="text-muted mt-1" style="font-size:0.65rem; font-weight:500;">Precisión: ±${registro.precision}</div>
+                            <div class="text-muted mt-1" style="font-size:0.65rem; font-weight:500;">Precisión: ±${registro.precision || 'N/A'}</div>
                         </td>
                     </tr>`;
                     tbody.appendChild(tr);
@@ -412,9 +414,14 @@
         }
 
         function abrirOpcionesMapa(lat, lon) {
-            // CORRECCIÓN: Enlace directo y limpio de Google Maps para navegadores y Apps móviles
-            document.getElementById('btnGoogleMaps').href = `https://www.google.com/maps/search/?api=1&query=${lat},${lon}`;
+            // CORRECCIÓN: Estructura del enlace de Google Maps corregida y limpia
+            document.getElementById('btnGoogleMaps').href = `https://www.google.com/maps?q=${lat},${lon}`;
             document.getElementById('btnWaze').href = `https://waze.com/ul?ll=${lat},${lon}&navigate=yes`;
+            
+            // Inicialización bajo demanda por si acaso falló al inicio
+            if(!modalMapas && typeof bootstrap !== 'undefined') {
+                modalMapas = new bootstrap.Modal(document.getElementById('mapModal'));
+            }
             if(modalMapas) modalMapas.show();
         }
     </script>
