@@ -237,7 +237,7 @@
 
     <script>
         // CONFIGURACIÓN: REEMPLAZA ESTA URL CON TU URL DE APLICACIÓN WEB DE APPS SCRIPT
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwflbs0oesEm0bSpQ96o26ulBazpO1MIL2YGPihIuRqNCgxZZZusY5zDvK0tXDRaRHz/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzIT0g64sFXOcHwjcOmUcrNzQJ-T-ny4nNIfYC9CTMRiZYg-XigpX6_xeJq2_XFZgNb/exec';
 
         const form = document.getElementById('formRegistro');
         const gpsStatus = document.getElementById('gpsStatus');
@@ -328,7 +328,8 @@
                     setCargando(false);
                     gpsStatus.innerHTML = `<span class="text-danger"><i class="bi bi-x-circle-fill"></i> Señal GPS inactiva.</span>`;
                     boxGps.style.borderColor = '#dc3545';
-                    mostrarAlerta('<i class="bi bi-phone-vibrate-fill me-2"></i><strong>debes encender tu GPS o ubicación ve a configuracion de tu tlf y activala antes de enviar los datos.</strong>', 'danger');
+                    // Mensaje corregido exactamente bajo los requerimientos solicitados
+                    mostrarAlerta('<i class="bi bi-phone-vibrate-fill me-2"></i><strong>antes de registrar enciende tu GPS o ubicación</strong>', 'danger');
                 },
                 opcionesGps
             );
@@ -388,7 +389,8 @@
         }
 
         function abrirOpcionesMapa(lat, lon) {
-            document.getElementById('btnGoogleMaps').href = `https://www.google.com/maps/search/?api=1&query=${lat},${lon}`;
+            // Sintaxis corregida e interpolación nativa limpia sin caracteres de error
+            document.getElementById('btnGoogleMaps').href = `https://maps.google.com/?q=${lat},${lon}`;
             document.getElementById('btnWaze').href = `https://waze.com/ul?ll=${lat},${lon}&navigate=yes`;
             modalMapas.show();
         }
