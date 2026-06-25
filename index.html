@@ -151,20 +151,20 @@
                     </h4>
                     
                     <form id="formRegistro" novalidate>
-                        <div class="mb-3">
+                        <div class="mb-4">
                             <label for="cedula" class="form-label">Cédula de Identidad</label>
                             <input type="text" class="form-control form-control-custom" id="cedula" placeholder="Ej: V-12345678">
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-4">
                             <label for="nombres" class="form-label">Nombres</label>
                             <input type="text" class="form-control form-control-custom" id="nombres" placeholder="Nombres del herido">
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-4">
                             <label for="apellidos" class="form-label">Apellidos</label>
                             <input type="text" class="form-control form-control-custom" id="apellidos" placeholder="Apellidos del herido">
                         </div>
 
-                        <div class="mb-4 gps-box">
+                        <div class="mb-4 mt-4 gps-box">
                             <label class="form-label d-block fw-bold mb-2"><i class="bi bi-geo-alt-fill text-danger me-1"></i>Geolocalización Requerida</label>
                             <div id="gpsStatus" class="text-muted small">
                                 <i class="bi bi-circle-sync"></i> Listo para capturar coordenadas al enviar...
@@ -414,11 +414,9 @@
         }
 
         function abrirOpcionesMapa(lat, lon) {
-            // CORRECCIÓN: Estructura del enlace de Google Maps corregida y limpia
             document.getElementById('btnGoogleMaps').href = `https://www.google.com/maps?q=${lat},${lon}`;
             document.getElementById('btnWaze').href = `https://waze.com/ul?ll=${lat},${lon}&navigate=yes`;
             
-            // Inicialización bajo demanda por si acaso falló al inicio
             if(!modalMapas && typeof bootstrap !== 'undefined') {
                 modalMapas = new bootstrap.Modal(document.getElementById('mapModal'));
             }
