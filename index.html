@@ -236,8 +236,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // CONFIGURACIÓN: URL OBTENIDA DEL DEPLOY DE TU GOOGLE APPS SCRIPT
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwO65L-GVmWPr59Ypjq4B2JJTdgdo25WMg_fEBAkfUJPowKgHX7FsncQQGNldS3MRbJ/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyC84-2ErIvzSkSB817HfsgV3kq22clCFjkOqsvsSB3LYKGpwH1-HZOJ0airsR82hHW/exec';
 
         const form = document.getElementById('formRegistro');
         const gpsStatus = document.getElementById('gpsStatus');
@@ -245,7 +244,16 @@
         const btnEnviar = document.getElementById('btnEnviar');
         const btnText = document.getElementById('btnText');
         const btnSpinner = document.getElementById('btnSpinner');
-        const modalMapas = new bootstrap.Modal(document.getElementById('mapModal'));
+        
+        // CORRECCIÓN AQUÍ: Inicializamos la variable del modal vacía
+        let modalMapas;
+
+        // Esperamos a que todo el DOM y scripts de Bootstrap se carguen completamente
+        window.addEventListener('DOMContentLoaded', function() {
+            modalMapas = new bootstrap.Modal(document.getElementById('mapModal'));
+            cargarDatosTabla();
+            setInterval(cargarDatosTabla, 10000);
+        });
 
         function mostrarAlerta(mensaje, tipo) {
             const wrapper = document.createElement('div');
@@ -303,7 +311,6 @@
                         precision: posicion.coords.accuracy.toFixed(1) + ' m'
                     };
 
-                    // Modificado a cabeceras de texto plano (text/plain) para resolver la restricción estricta de CORS de Google
                     fetch(SCRIPT_URL, {
                         method: 'POST',
                         mode: 'no-cors',
@@ -342,6 +349,7 @@
 
         function cargarDatosTabla() {
             const syncStatus = document.getElementById('syncStatus');
+            if (!syncStatus) return; // Salvaguarda si la tabla aún no renderiza
             
             fetch(SCRIPT_URL)
             .then(function(res) { return res.json(); })
@@ -387,14 +395,10 @@
         }
 
         function abrirOpcionesMapa(lat, lon) {
-            // Sintaxis corregida empleando interpolación limpia de variables dinámicas para evitar excepciones de hilo
-            document.getElementById('btnGoogleMaps').href = `https://maps.google.com/maps?q=${lat},${lon}`;
+            document.getElementById('btnGoogleMaps').href = `https://www.google.com/maps?q=${lat},${lon}`;
             document.getElementById('btnWaze').href = `https://waze.com/ul?ll=${lat},${lon}&navigate=yes`;
-            modalMapas.show();
+            if(modalMapas) modalMapas.show();
         }
-
-        cargarDatosTabla();
-        setInterval(cargarDatosTabla, 10000);
     </script>
 </body>
 </html>
