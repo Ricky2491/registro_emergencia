@@ -4,139 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Alerta y Localización de Heridos</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     
     <style>
-        /* Fondo degradado sutil con tono de interfaz de control */
-        body {
-            background: linear-gradient(135deg, #eef2f7 0%, #dfe6e9 100%);
-            min-height: 100vh;
-            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        /* Barra de navegación con estilo sólido e institucional */
-        .navbar-emergency {
-            background-color: #dc3545;
-            border-bottom: 4px solid #bd2130;
-        }
-
-        /* Tarjetas con bordes pulidos y sombras suaves de interfaz moderna */
-        .card-custom {
-            background: #ffffff;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-            padding: 2rem !important;
-            transition: transform 0.2s ease;
-        }
-
-        /* Títulos de sección estilizados */
-        .section-title {
-            font-weight: 700;
-            color: #2d3436;
-            letter-spacing: -0.5px;
-            position: relative;
-        }
-
-        /* --- ESTILIZACIÓN PREMIUM PARA INPUTS Y FORMULARIOS --- */
-        .form-label {
-            font-weight: 600;
-            color: #495057;
-            font-size: 0.9rem;
-            margin-bottom: 0.4rem;
-        }
-
-        .form-control-custom {
-            border: 2px solid #ced4da;
-            border-radius: 10px;
-            padding: 0.75rem 1rem;
-            font-size: 1rem;
-            color: #212529;
-            background-color: #f8f9fa;
-            transition: all 0.2s ease-in-out;
-        }
-
-        /* Estado cuando el usuario hace clic en el campo (Focus) */
-        .form-control-custom:focus {
-            color: #212529;
-            background-color: #ffffff;
-            border-color: #dc3545; /* Brillo rojo de alerta */
-            outline: 0;
-            box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.15);
-        }
-
-        /* Estilo para los placeholders (texto de sugerencia interno) */
-        .form-control-custom::placeholder {
-            color: #adb5bd;
-            font-weight: 400;
-        }
-
-        /* --- CUADRO DE ESTADO DE GEOLOCALIZACIÓN --- */
-        .gps-box {
-            background-color: #f8f9fa;
-            border: 2px dashed #dee2e6;
-            border-radius: 12px;
-            padding: 1.25rem;
-            transition: all 0.3s ease;
-        }
-
-        /* --- ESTILO DE LA TABLA DE MONITOREO --- */
-        .table-responsive-custom {
-            max-height: 520px;
-            overflow-y: auto;
-            border-radius: 12px;
-            border: 1px solid #dee2e6;
-        }
-
-        .table-custom {
-            margin-bottom: 0;
-        }
-
-        .table-custom thead th {
-            background-color: #2d3436;
-            color: #ffffff;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 0.5px;
-            padding: 1rem;
-            border: none;
-        }
-
-        .table-custom tbody tr {
-            transition: background-color 0.2s ease;
-        }
-
-        .table-custom tbody td {
-            padding: 1rem;
-            color: #2d3436;
-            border-bottom: 1px solid #edf2f7;
-        }
-
-        /* Resaltado al pasar el mouse por encima de la fila */
-        .table-custom tbody tr:hover {
-            background-color: #f1f3f5;
-        }
-
-        /* Animación para el badge de sincronización */
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.6; }
-            100% { opacity: 1; }
-        }
-        .spin-pulse {
-            animation: pulse 2s infinite ease-in-out;
-        }
+        body { background: linear-gradient(135deg, #eef2f7 0%, #dfe6e9 100%); min-height: 100vh; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+        .navbar-emergency { background-color: #dc3545; border-bottom: 4px solid #bd2130; }
+        .card-custom { background: #ffffff; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04); padding: 2rem !important; }
+        .section-title { font-weight: 700; color: #2d3436; letter-spacing: -0.5px; }
+        .form-label { font-weight: 600; color: #495057; font-size: 0.9rem; margin-bottom: 0.4rem; }
+        .form-control-custom { border: 2px solid #ced4da; border-radius: 10px; padding: 0.75rem 1rem; font-size: 1rem; color: #212529; background-color: #f8f9fa; }
+        .form-control-custom:focus { border-color: #dc3545; outline: 0; box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.15); }
+        .gps-box { background-color: #f8f9fa; border: 2px dashed #dee2e6; border-radius: 12px; padding: 1.25rem; }
+        .table-responsive-custom { max-height: 520px; overflow-y: auto; border-radius: 12px; border: 1px solid #dee2e6; }
+        .table-custom thead th { background-color: #2d3436; color: #ffffff; font-weight: 600; text-transform: uppercase; font-size: 0.8rem; padding: 1rem; position: sticky; top: 0; }
+        .table-custom tbody td { padding: 1rem; color: #2d3436; border-bottom: 1px solid #edf2f7; }
+        .spin-pulse { animation: pulse 2s infinite ease-in-out; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+        /* Estilo para inputs de filtro */
+        .filter-input { border-radius: 8px; border: 1px solid #dee2e6; }
     </style>
 </head>
 <body>
 
     <nav class="navbar navbar-dark navbar-emergency shadow-sm py-3">
         <div class="container">
-            <span class="navbar-brand mb-0 h1 fw-bold">
-                <i class="bi bi-exclamation-triangle-fill me-2 text-warning"></i> REPORTES DE EMERGENCY - VENEZUELA
-            </span>
+            <span class="navbar-brand mb-0 h1 fw-bold"><i class="bi bi-exclamation-triangle-fill me-2 text-warning"></i> REPORTES DE EMERGENCY - VENEZUELA</span>
         </div>
     </nav>
 
@@ -146,33 +39,26 @@
         <div class="row g-4">
             <div class="col-12 col-lg-4">
                 <div class="card card-custom">
-                    <h4 class="section-title mb-4 border-bottom pb-2">
-                        <i class="bi bi-person-plus-fill text-danger me-2"></i>Registrar Herido
-                    </h4>
-                    
+                    <h1 class="section-title mb-4 border-bottom pb-2"><i class="bi bi-person-plus-fill text-danger me-2"></i>Registrar Herido</h1>
                     <form id="formRegistro" novalidate>
-                        <div class="mb-4" style="padding-bottom: 10px;">
+                        <div class="mb-4">
                             <label for="cedula" class="form-label">Cédula de Identidad</label>
-                            <input type="text" class="form-control form-control-custom" id="cedula" placeholder="Ej: V-12345678">
+                            <input type="text" class="form-control form-control-custom" id="cedula" placeholder="Ej: V-12345678" required>
                         </div>
-                        <div class="mb-4" style="padding-bottom: 10px;">
+                        <div class="mb-4">
                             <label for="nombres" class="form-label">Nombres</label>
-                            <input type="text" class="form-control form-control-custom" id="nombres" placeholder="Nombres del herido">
+                            <input type="text" class="form-control form-control-custom" id="nombres" placeholder="Nombres del herido" required>
                         </div>
-                        <div class="mb-4" style="padding-bottom: 10px;">
+                        <div class="mb-4">
                             <label for="apellidos" class="form-label">Apellidos</label>
-                            <input type="text" class="form-control form-control-custom" id="apellidos" placeholder="Apellidos del herido">
+                            <input type="text" class="form-control form-control-custom" id="apellidos" placeholder="Apellidos del herido" required>
                         </div>
-
-                        <div class="mb-4 mt-4 gps-box">
-                            <label class="form-label d-block fw-bold mb-2"><i class="bi bi-geo-alt-fill text-danger me-1"></i>Geolocalización Requerida</label>
-                            <div id="gpsStatus" class="text-muted small">
-                                <i class="bi bi-circle-sync"></i> Listo para capturar coordenadas al enviar...
-                            </div>
+                        <div class="mb-4 gps-box">
+                            <label class="form-label d-block fw-bold mb-2"><i class="bi bi-geo-alt-fill text-danger me-1"></i>Geolocalización</label>
+                            <div id="gpsStatus" class="text-muted small"><i class="bi bi-circle-sync"></i> Listo para capturar coordenadas...</div>
                         </div>
-
                         <button type="submit" class="btn btn-danger w-100 py-3 fw-bold shadow-sm" id="btnEnviar" style="border-radius: 10px;">
-                            <span id="btnText"><i class="bi bi-send-fill me-2"></i>Enviar Reporte con Ubicación</span>
+                            <span id="btnText"><i class="bi bi-send-fill me-2"></i>Enviar Reporte</span>
                             <span id="btnSpinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
                         </button>
                     </form>
@@ -181,13 +67,22 @@
 
             <div class="col-12 col-lg-8">
                 <div class="card card-custom">
-                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center border-bottom pb-2 mb-4">
-                        <h4 class="section-title mb-2 mb-sm-0">
-                            <i class="bi bi-journal-medical text-danger me-2"></i>Monitoreo en Tiempo Real
-                        </h4>
-                        <span class="badge bg-success p-2 px-3 spin-pulse" id="syncStatus" style="font-size: 0.85rem; border-radius: 8px;">
-                            <i class="bi bi-arrow-repeat me-1"></i> Sistema Activo
-                        </span>
+                    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-4">
+                        <h4 class="section-title mb-0"><i class="bi bi-journal-medical text-danger me-2"></i>Monitoreo en Tiempo Real</h4>
+                        <span class="badge bg-success p-2 px-3 spin-pulse" id="syncStatus"><i class="bi bi-arrow-repeat me-1"></i> Sistema Activo</span>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-7">
+                            <input type="text" id="filtroTexto" class="form-control filter-input" placeholder="🔍 Buscar por nombre o cédula...">
+                        </div>
+                        <div class="col-md-5">
+                            <select id="filtroEstado" class="form-select filter-input">
+                                <option value="">Todos los Estados</option>
+                                <option value="Perdido">Perdido</option>
+                                <option value="Encontrado">Encontrado</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="table-responsive table-responsive-custom">
@@ -197,16 +92,13 @@
                                     <th>Fecha / Hora</th>
                                     <th>Cédula</th>
                                     <th>Herido</th>
-                                    <th class="text-center">Ubicación / Mapas</th>
+                                    <th>Estado</th>
+                                    <th>Ubicación</th>
+                                    <th>Cambiar Estado</th>
                                 </tr>
                             </thead>
                             <tbody id="tablaCuerpo">
-                                <tr>
-                                    <td colspan="4" class="text-center text-muted py-5">
-                                        <div class="spinner-border spinner-border-sm text-danger me-2" role="status"></div>
-                                        Cargando base de datos del sistema...
-                                    </td>
-                                </tr>
+                                <tr><td colspan="6" class="text-center text-muted py-5">Cargando base de datos...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -215,179 +107,71 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyC84-2ErIvzSkSB817HfsgV3kq22clCFjkOqsvsSB3LYKGpwH1-HZOJ0airsR82hHW/exec';
-
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwh7VHSaSq1PNlLEMEHQUdBk6HGo-njK2NDtPBSZcxtz9mPsWUWuQSVgLUS4BtKrNoc/exec';
         const form = document.getElementById('formRegistro');
-        const gpsStatus = document.getElementById('gpsStatus');
-        const alertPlaceholder = document.getElementById('liveAlertPlaceholder');
-        const btnEnviar = document.getElementById('btnEnviar');
-        const btnText = document.getElementById('btnText');
-        const btnSpinner = document.getElementById('btnSpinner');
-        
-        let esPrimeraCarga = true;
+        const filtroTexto = document.getElementById('filtroTexto');
+        const filtroEstado = document.getElementById('filtroEstado');
 
-        window.addEventListener('DOMContentLoaded', function() {
+        // Lógica de filtrado
+        function aplicarFiltros() {
+            const texto = filtroTexto.value.toLowerCase();
+            const estado = filtroEstado.value.toLowerCase();
+            const filas = document.querySelectorAll('#tablaCuerpo tr');
+
+            filas.forEach(fila => {
+                const cedula = fila.cells[1].innerText.toLowerCase();
+                const nombre = fila.cells[2].innerText.toLowerCase();
+                const badge = fila.querySelector('.badge-estado').innerText.toLowerCase();
+
+                const coincideTexto = cedula.includes(texto) || nombre.includes(texto);
+                const coincideEstado = estado === "" || badge.includes(estado);
+
+                fila.style.display = (coincideTexto && coincideEstado) ? '' : 'none';
+            });
+        }
+
+        // Eventos para filtros
+        filtroTexto.addEventListener('input', aplicarFiltros);
+        filtroEstado.addEventListener('change', aplicarFiltros);
+
+        window.addEventListener('DOMContentLoaded', () => {
             cargarDatosTabla();
-            setInterval(cargarDatosTabla, 10000);
+            setInterval(cargarDatosTabla, 15000);
         });
 
-        function mostrarAlerta(mensaje, tipo) {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'alert alert-' + tipo + ' alert-dismissible fade show shadow-sm fw-bold border-0';
-            wrapper.style.borderRadius = '10px';
-            wrapper.role = 'alert';
-            wrapper.innerHTML = '<div>' + mensaje + '</div><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
-            alertPlaceholder.append(wrapper);
-            setTimeout(function() { wrapper.remove(); }, 9000);
-        }
-
-        function setCargando(estado) {
-            if (estado) {
-                btnEnviar.disabled = true;
-                btnText.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Procesando Reporte...';
-                btnSpinner.classList.add('d-none');
-            } else {
-                btnEnviar.disabled = false;
-                btnText.innerHTML = '<i class="bi bi-send-fill me-2"></i>Enviar Reporte con Ubicación';
-                btnSpinner.classList.add('d-none');
+        function confirmarCambio(btn) {
+            if(confirm('¿Deseas cambiar el estado a encontrado?')) {
+                const tr = btn.closest('tr');
+                const badge = tr.querySelector('.badge-estado');
+                badge.innerText = 'Encontrado';
+                badge.classList.replace('bg-danger', 'bg-success');
+                btn.remove();
+                aplicarFiltros(); // Re-aplicar filtros tras cambio
             }
-        }
-
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            setCargando(true);
-
-            if (!navigator.geolocation) {
-                mostrarAlerta("Tu dispositivo no soporta servicios de geolocalización.", "danger");
-                setCargando(false);
-                return;
-            }
-
-            const opcionesGps = {
-                enableHighAccuracy: true,
-                timeout: 8000,
-                maximumAge: 0
-            };
-
-            const boxGps = document.querySelector('.gps-box');
-            gpsStatus.innerHTML = '<span class="text-warning"><span class="spinner-border spinner-border-sm me-1"></span> Conectando con satélites GPS...</span>';
-            boxGps.style.borderColor = '#ffc107';
-
-            navigator.geolocation.getCurrentPosition(
-                function(posicion) {
-                    gpsStatus.innerHTML = '<span class="text-success"><i class="bi bi-check-circle-fill"></i> Coordenadas fijadas con éxito.</span>';
-                    boxGps.style.borderColor = '#198754';
-                    
-                    const payload = {
-                        cedula: document.getElementById('cedula').value.trim(),
-                        nombres: document.getElementById('nombres').value.trim(),
-                        apellidos: document.getElementById('apellidos').value.trim(),
-                        latitud: posicion.coords.latitude,
-                        longitud: posicion.coords.longitude,
-                        precision: posicion.coords.accuracy.toFixed(1) + ' m'
-                    };
-
-                    fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'text/plain' }, 
-                        body: JSON.stringify(payload)
-                    })
-                    .then(function() {
-                        mostrarAlerta("<i class='bi bi-cloud-check-fill me-2'></i>Los datos se registraron correctamente", "success");
-                        form.reset();
-                        gpsStatus.innerHTML = '<i class="bi bi-geo-alt"></i> Listo para próximo reporte...';
-                        boxGps.style.borderColor = '#dee2e6';
-                        
-                        setTimeout(cargarDatosTabla, 1200);
-                    })
-                    .catch(function(err) {
-                        mostrarAlerta("<i class='bi bi-exclamation-triangle-fill me-2'></i>Error: no se lograron procesar los datos, intentarlo nuevamente.", "danger");
-                        console.error(err);
-                    })
-                    .finally(function() { setCargando(false); });
-                },
-                function(error) {
-                    setCargando(false);
-                    gpsStatus.innerHTML = '<span class="text-danger"><i class="bi bi-x-circle-fill"></i> Señal GPS inactiva.</span>';
-                    boxGps.style.borderColor = '#dc3545';
-                    mostrarAlerta('<i class="bi bi-phone-vibrate-fill me-2"></i><strong>Antes de registrar enciende tu GPS o ubicación</strong>', 'danger');
-                },
-                opcionesGps
-            );
-        });
-
-        function formatearFecha(fechaStr) {
-            if(!fechaStr) return "N/A";
-            const d = new Date(fechaStr);
-            if(isNaN(d.getTime())) return fechaStr;
-            return d.toLocaleString('es-VE', { hour12: true });
         }
 
         function cargarDatosTabla() {
-            const syncStatus = document.getElementById('syncStatus');
-            if (!syncStatus) return; 
-            
             const tbody = document.getElementById('tablaCuerpo');
-            
-            if (esPrimeraCarga) {
-                tbody.innerHTML = `<tr>
-                    <td colspan="4" class="text-center text-muted py-5">
-                        <div class="spinner-border spinner-border-sm text-danger me-2" role="status"></div>
-                        Cargando base de datos del sistema...
-                    </td>
-                </tr>`;
-            }
-
             fetch(SCRIPT_URL)
-            .then(function(res) { return res.json(); })
-            .then(function(data) {
-                tbody.innerHTML = ''; 
-                esPrimeraCarga = false; 
-
-                if (data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4">Sin reportes registrados.</td></tr>';
-                    return;
-                }
-
-                data.reverse().forEach(function(registro) {
+            .then(res => res.json())
+            .then(data => {
+                tbody.innerHTML = '';
+                data.reverse().forEach(registro => {
                     const tr = document.createElement('tr');
-                    const nombreCompleto = (registro.nombres || registro.apellidos) 
-                        ? (registro.nombres + ' ' + registro.apellidos).trim() 
-                        : '<span class="text-muted small"><em>No provisto</em></span>';
-                    
-                    const cedulaFormateada = registro.cedula ? registro.cedula : '<span class="text-muted">-</span>';
-
-                    // Implementación del Botón de Selección Desplegable (Dropdown) nativo
+                    const nombreCompleto = `${registro.nombres || ''} ${registro.apellidos || ''}`.trim();
                     tr.innerHTML = `
-                        <td class="small fw-bold text-secondary">${formatearFecha(registro.fecha)}</td>
-                        <td class="fw-semibold">${cedulaFormateada}</td>
+                        <td class="small fw-bold text-secondary">${new Date(registro.fecha).toLocaleString()}</td>
+                        <td class="fw-semibold">${registro.cedula || '-'}</td>
                         <td>${nombreCompleto}</td>
-                        <td class="text-center">
-                            <div class="dropdown">
-                                <button class="btn btn-sm btn-dark dropdown-toggle w-100 py-2" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="max-width: 130px; border-radius:6px; font-size:0.8rem; font-weight:600;">
-                                    <i class="bi bi-geo-alt-fill text-danger me-1"></i> MAPA RUTA
-                                </button>
-                                <ul class="dropdown-menu shadow-sm" style="border-radius: 10px; border: 1px solid #dee2e6;">
-                                    <li><a class="dropdown-item fw-bold py-2" href="https://www.google.com/maps/search/?api=1&query=${registro.latitud},${registro.longitud}" target="_blank"><i class="bi bi-google text-primary me-2"></i>Google Maps</a></li>
-                                    <li><a class="dropdown-item fw-bold py-2" href="https://waze.com/ul?ll=${registro.latitud},${registro.longitud}&navigate=yes" target="_blank" style="color: #00bcd4;"><i class="bi bi-compass-fill me-2"></i>Waze</a></li>
-                                </ul>
-                            </div>
-                            <div class="text-muted mt-1" style="font-size:0.65rem; font-weight:500;">Precisión: ±${registro.precision || 'N/A'}</div>
-                        </td>
-                    </tr>`;
+                        <td><span class="badge bg-danger badge-estado">Perdido</span></td>
+                        <td class="text-center"><a href="https://www.google.com/maps/search/?api=1&query=${registro.latitud},${registro.longitud}" target="_blank" class="btn btn-sm btn-dark"><i class="bi bi-geo-alt"></i></a></td>
+                        <td class="text-center"><button class="btn btn-sm btn-success" onclick="confirmarCambio(this)"><i class="bi bi-check-lg"></i></button></td>
+                    `;
                     tbody.appendChild(tr);
                 });
-
-                syncStatus.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i> Sincronizado';
-                syncStatus.className = "badge bg-success p-2 px-3 spin-pulse";
-            })
-            .catch(function(err) {
-                console.error(err);
-                syncStatus.innerHTML = '<i class="bi bi-exclamation-triangle-fill me-1"></i> Fallo de Red';
-                syncStatus.className = "badge bg-danger p-2 px-3";
+                aplicarFiltros(); // Re-aplicar filtros al recargar datos
             });
         }
     </script>
