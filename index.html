@@ -237,7 +237,7 @@
 
     <script>
         // CONFIGURACIÓN: URL OBTENIDA DEL DEPLOY DE TU GOOGLE APPS SCRIPT
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyBGiUj_JVRSLTNsWRm2mWrKbv2J9EZ741bSdoX5Xc48zPbUg_g9Px-_jMzuBtGYit3/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwO65L-GVmWPr59Ypjq4B2JJTdgdo25WMg_fEBAkfUJPowKgHX7FsncQQGNldS3MRbJ/exec';
 
         const form = document.getElementById('formRegistro');
         const gpsStatus = document.getElementById('gpsStatus');
@@ -260,8 +260,8 @@
         function setCargando(estado) {
             if (estado) {
                 btnEnviar.disabled = true;
-                btnText.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Enviando Reporte...';
-                btnSpinner.classList.add('d-none'); // Mantenemos la consistencia simplificando el nodo interno
+                btnText.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Procesando Reporte...';
+                btnSpinner.classList.add('d-none');
             } else {
                 btnEnviar.disabled = false;
                 btnText.innerHTML = '<i class="bi bi-send-fill me-2"></i>Enviar Reporte con Ubicación';
@@ -303,10 +303,11 @@
                         precision: posicion.coords.accuracy.toFixed(1) + ' m'
                     };
 
+                    // Modificado a cabeceras de texto plano (text/plain) para resolver la restricción estricta de CORS de Google
                     fetch(SCRIPT_URL, {
                         method: 'POST',
                         mode: 'no-cors',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: { 'Content-Type': 'text/plain' },
                         body: JSON.stringify(payload)
                     })
                     .then(function() {
@@ -386,8 +387,8 @@
         }
 
         function abrirOpcionesMapa(lat, lon) {
-            // Se corrige la sintaxis de variables para evitar que rompa la ejecución e hilos lógicos en JavaScript
-            document.getElementById('btnGoogleMaps').href = `https://maps.google.com/?q=${lat},${lon}`;
+            // Sintaxis corregida empleando interpolación limpia de variables dinámicas para evitar excepciones de hilo
+            document.getElementById('btnGoogleMaps').href = `https://maps.google.com/maps?q=${lat},${lon}`;
             document.getElementById('btnWaze').href = `https://waze.com/ul?ll=${lat},${lon}&navigate=yes`;
             modalMapas.show();
         }
