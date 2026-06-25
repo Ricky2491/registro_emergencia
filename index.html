@@ -151,15 +151,15 @@
                     </h4>
                     
                     <form id="formRegistro" novalidate>
-                        <div class="mb-4">
+                        <div class="mb-4" style="padding-bottom: 10px;">
                             <label for="cedula" class="form-label">Cédula de Identidad</label>
                             <input type="text" class="form-control form-control-custom" id="cedula" placeholder="Ej: V-12345678">
                         </div>
-                        <div class="mb-4">
+                        <div class="mb-4" style="padding-bottom: 10px;">
                             <label for="nombres" class="form-label">Nombres</label>
                             <input type="text" class="form-control form-control-custom" id="nombres" placeholder="Nombres del herido">
                         </div>
-                        <div class="mb-4">
+                        <div class="mb-4" style="padding-bottom: 10px;">
                             <label for="apellidos" class="form-label">Apellidos</label>
                             <input type="text" class="form-control form-control-custom" id="apellidos" placeholder="Apellidos del herido">
                         </div>
@@ -215,24 +215,6 @@
         </div>
     </div>
 
-    <div class="modal fade" id="mapModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 15px 40px rgba(0,0,0,0.2);">
-                <div class="modal-header bg-dark text-white" style="border-top-left-radius: 16px; border-top-right-radius: 16px;">
-                    <h5 class="modal-title fw-bold"><i class="bi bi-map-fill me-2 text-warning"></i>Desplegar Ruta de Rescate</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body text-center py-4 px-4">
-                    <p class="text-secondary mb-4">Selecciona la herramienta cartográfica para calcular la ruta exacta hacia la persona encontrada:</p>
-                    <div class="d-grid gap-3">
-                        <a id="btnGoogleMaps" target="_blank" class="btn btn-outline-primary btn-lg fw-bold py-2" style="border-radius: 10px;"><i class="bi bi-google me-2"></i>Navegar con Google Maps</a>
-                        <a id="btnWaze" target="_blank" class="btn btn-outline-info btn-lg fw-bold py-2" style="border-radius: 10px; color: #00bcd4; border-color: #00bcd4;"><i class="bi bi-compass-fill me-2"></i>Navegar con Waze</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
@@ -245,21 +227,10 @@
         const btnText = document.getElementById('btnText');
         const btnSpinner = document.getElementById('btnSpinner');
         
-        let modalMapas;
-
-        // Bandera para evitar sobrescribir visualmente de forma brusca
         let esPrimeraCarga = true;
 
         window.addEventListener('DOMContentLoaded', function() {
-            // CORRECCIÓN SEGURA: Verificamos si Bootstrap ya se cargó globalmente de forma correcta
-            if (typeof bootstrap !== 'undefined') {
-                modalMapas = new bootstrap.Modal(document.getElementById('mapModal'));
-            } else {
-                console.warn("Bootstrap JS no se ha detectado globalmente en DOMContentLoaded, se inicializará bajo demanda.");
-            }
-            
             cargarDatosTabla();
-            // Intervalo de monitoreo en segundo plano
             setInterval(cargarDatosTabla, 10000);
         });
 
@@ -325,7 +296,7 @@
                         body: JSON.stringify(payload)
                     })
                     .then(function() {
-                        mostrarAlerta("<i class='bi bi-cloud-check-fill me-2'></i>los datos de registraron correctamente", "success");
+                        mostrarAlerta("<i class='bi bi-cloud-check-fill me-2'></i>Los datos se registraron correctamente", "success");
                         form.reset();
                         gpsStatus.innerHTML = '<i class="bi bi-geo-alt"></i> Listo para próximo reporte...';
                         boxGps.style.borderColor = '#dee2e6';
@@ -333,7 +304,7 @@
                         setTimeout(cargarDatosTabla, 1200);
                     })
                     .catch(function(err) {
-                        mostrarAlerta("<i class='bi bi-exclamation-triangle-fill me-2'></i>error no e lograron procesar los datos intenatrlo nuevamente.", "danger");
+                        mostrarAlerta("<i class='bi bi-exclamation-triangle-fill me-2'></i>Error: no se lograron procesar los datos, intentarlo nuevamente.", "danger");
                         console.error(err);
                     })
                     .finally(function() { setCargando(false); });
@@ -342,7 +313,7 @@
                     setCargando(false);
                     gpsStatus.innerHTML = '<span class="text-danger"><i class="bi bi-x-circle-fill"></i> Señal GPS inactiva.</span>';
                     boxGps.style.borderColor = '#dc3545';
-                    mostrarAlerta('<i class="bi bi-phone-vibrate-fill me-2"></i><strong>antes de registrar enciende tu GPS o ubicación</strong>', 'danger');
+                    mostrarAlerta('<i class="bi bi-phone-vibrate-fill me-2"></i><strong>Antes de registrar enciende tu GPS o ubicación</strong>', 'danger');
                 },
                 opcionesGps
             );
@@ -389,14 +360,21 @@
                     
                     const cedulaFormateada = registro.cedula ? registro.cedula : '<span class="text-muted">-</span>';
 
+                    // Implementación del Botón de Selección Desplegable (Dropdown) nativo
                     tr.innerHTML = `
                         <td class="small fw-bold text-secondary">${formatearFecha(registro.fecha)}</td>
                         <td class="fw-semibold">${cedulaFormateada}</td>
                         <td>${nombreCompleto}</td>
                         <td class="text-center">
-                            <button class="btn btn-sm btn-dark w-100 py-2" style="max-width: 130px; border-radius:6px; font-size:0.8rem; font-weight:600;" onclick="abrirOpcionesMapa(${registro.latitud}, ${registro.longitud})">
-                                <i class="bi bi-geo-alt-fill text-danger me-1"></i> MAPA RUTA
-                            </button>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-dark dropdown-toggle w-100 py-2" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="max-width: 130px; border-radius:6px; font-size:0.8rem; font-weight:600;">
+                                    <i class="bi bi-geo-alt-fill text-danger me-1"></i> MAPA RUTA
+                                </button>
+                                <ul class="dropdown-menu shadow-sm" style="border-radius: 10px; border: 1px solid #dee2e6;">
+                                    <li><a class="dropdown-item fw-bold py-2" href="https://www.google.com/maps/search/?api=1&query=${registro.latitud},${registro.longitud}" target="_blank"><i class="bi bi-google text-primary me-2"></i>Google Maps</a></li>
+                                    <li><a class="dropdown-item fw-bold py-2" href="https://waze.com/ul?ll=${registro.latitud},${registro.longitud}&navigate=yes" target="_blank" style="color: #00bcd4;"><i class="bi bi-compass-fill me-2"></i>Waze</a></li>
+                                </ul>
+                            </div>
                             <div class="text-muted mt-1" style="font-size:0.65rem; font-weight:500;">Precisión: ±${registro.precision || 'N/A'}</div>
                         </td>
                     </tr>`;
@@ -411,16 +389,6 @@
                 syncStatus.innerHTML = '<i class="bi bi-exclamation-triangle-fill me-1"></i> Fallo de Red';
                 syncStatus.className = "badge bg-danger p-2 px-3";
             });
-        }
-
-        function abrirOpcionesMapa(lat, lon) {
-            document.getElementById('btnGoogleMaps').href = `https://www.google.com/maps?q=${lat},${lon}`;
-            document.getElementById('btnWaze').href = `https://waze.com/ul?ll=${lat},${lon}&navigate=yes`;
-            
-            if(!modalMapas && typeof bootstrap !== 'undefined') {
-                modalMapas = new bootstrap.Modal(document.getElementById('mapModal'));
-            }
-            if(modalMapas) modalMapas.show();
         }
     </script>
 </body>
